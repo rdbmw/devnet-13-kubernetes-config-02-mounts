@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-stage
+  namespace: stage
+  labels:
+    app: app-stage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-stage
+  template:
+    metadata:
+      labels:
+        app: app-stage
+    spec:
+      containers:
+      - name: frontend
+        image:  rdbmw/front-app:1.0.0
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: "/static"
+          name: static
+      - name: backend
+        image: rdbmw/back-app:1.0.0
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - mountPath: "/static"
+          name: static
+      volumes:
+      - name: static
+        emptyDir: { }

@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: prod
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image:  rdbmw/front-app:1.0.0
+        ports:
+        - containerPort: 80
+        env:
+          - name: BASE_URL
+            value: http://backend:9000
+        volumeMounts:
+          - mountPath: "/pvc"
+            name: pvcmount
+      volumes:
+      - name: pvcmount
+        persistentVolumeClaim:
+          claimName: pvc

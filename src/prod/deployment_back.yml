@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: prod
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: rdbmw/back-app:1.0.0
+        ports:
+        - containerPort: 9000
+        env:
+          - name: DATABASE_URL
+            value: postgres://postgres:postgres@db:5432/news
+        volumeMounts:
+          - mountPath: "/pvc"
+            name: pvcmount
+      volumes:
+      - name: pvcmount
+        persistentVolumeClaim:
+          claimName: pvc
